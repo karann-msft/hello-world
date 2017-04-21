@@ -162,16 +162,16 @@ using System.Runtime.InteropServices;
     IF ($disableparallel -eq "Y")
     {
 
-        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -OutputDirectory $packagesDir -NoCache -source $nugetV3Api"
-        & $nugetExe restore $projectFile -Verbosity detailed -OutputDirectory $packagesDir -NoCache -source $nugetV3Api -msbuildversion 4.0 -disableparallel | timestamp | Tee-Object -Variable restoreCmdOutput
+        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api"
+        & $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api -msbuildversion 4.0 -disableparallel | timestamp | Tee-Object -Variable restoreCmdOutput
 
     }
 
     else
 
     {
-        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -OutputDirectory $packagesDir -NoCache -source $nugetV3Api"
-        & $nugetExe restore $projectFile -Verbosity detailed -OutputDirectory $packagesDir -NoCache -source $nugetV3Api -msbuildversion 4.0 | timestamp | Tee-Object -Variable restoreCmdOutput
+        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api"
+        & $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api -msbuildversion 4.0 | timestamp | Tee-Object -Variable restoreCmdOutput
     }
 
     $logFile = "$outputDir\TestScenario_v2_$disableparallel-$packageId-$packageVersion-log.txt"
