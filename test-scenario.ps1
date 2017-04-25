@@ -1,6 +1,8 @@
 $nugetExeUrl = "https://dist.nuget.org/win-x86-commandline/v4.0.0/nuget.exe"
 $nugetExe = "$PSScriptRoot\nuget.exe"
 $nugetV3Api = "https://api.nuget.org/v3/index.json"
+$nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/api/v2/package"
+$nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/api/v2/package"
 Get-Date -Format o
 $OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
 $outputDir = "$PSScriptRoot\$OutputTimeStamp"
@@ -25,7 +27,7 @@ Function Get-NuGetExe
     Write-Output ""
 }
 
-Function New-TestScenario ($packageId, $packageVersion, $disableparallel)
+Function New-TestScenario ($packageId, $packageVersion, $disableparallel, $source)
 {
 
     Write-Output "Initiating test scenario for $packageId $packageVersion"
@@ -162,19 +164,29 @@ using System.Runtime.InteropServices;
     IF ($disableparallel -eq "Y")
     {
 
-        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api"
-        & $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api -msbuildversion 4.0 -disableparallel | timestamp | Tee-Object -Variable restoreCmdOutput
+        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $source"
+        & $nugetExe restore $projectFile -Verbosity detailed -source $source -msbuildversion 4.0 -disableparallel | timestamp | Tee-Object -Variable restoreCmdOutput
 
+        $disableparallelflag = "disableparallel"
     }
 
     else
 
     {
-        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api"
-        & $nugetExe restore $projectFile -Verbosity detailed -source $nugetV3Api -msbuildversion 4.0 | timestamp | Tee-Object -Variable restoreCmdOutput
+        Write-Output "Invoking nuget restore command: $nugetExe restore $projectFile -Verbosity detailed -source $source"
+        & $nugetExe restore $projectFile -Verbosity detailed -source $source -msbuildversion 4.0 | timestamp | Tee-Object -Variable restoreCmdOutput
+
+        $disableparallelflag = "enableparallel"
     }
 
-    $logFile = "$outputDir\TestScenario_v2_$disableparallel-$packageId-$packageVersion-log.txt"
+    if ( $source -eq $nugetV3Api) {$src_name = "nuget-org"}
+    elseif ($source -eq $nugetV2Api_cn) {$src_name = "nuget-cn-east"}
+    elseif ($source -eq $nugetV2Api_us) {$src_name = "nuget-us-east"}
+
+
+    
+
+    $logFile = "$outputDir\TestScenario_v2-$src_name-$disableparallelflag-$packageId-$packageVersion-log.txt"
     Write-Output "Creating $logFile file"
     If (Test-Path $logFile){
 	    Remove-Item $logFile -Force
@@ -187,7 +199,7 @@ using System.Runtime.InteropServices;
 
     Write-Output "Completed test scenario for $packageId $packageVersion"
     Write-Output ""
-    Remove-Item $testDir -Force -Recurse
+    #Remove-Item $testDir -Force -Recurse
 }
 
 
@@ -511,12 +523,22 @@ function tracert_test()
 
 
 
-
 Get-NuGetExe
 #dxdiag /x $outputDir\dxdiag.xml
-New-TestScenario "Newtonsoft.Json" "10.0.2" "N"
-New-TestScenario "NUnit" "3.6.1" "N"
-New-TestScenario "Newtonsoft.Json" "10.0.2" "Y"
-New-TestScenario "NUnit" "3.6.1" "Y"
-#url_tests
-#ZipFiles "$PSScriptRoot\output.zip" "$outputDir"
+New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV3Api"
+New-TestScenario "NUnit" "3.6.1" "N" "$nugetV3Api"
+New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV3Api"
+New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV3Api"
+
+New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV2Api_cn"
+New-TestScenario "NUnit" "3.6.1" "N" "$nugetV2Api_cn"
+New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV2Api_cn"
+New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV2Api_cn"
+
+New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV2Api_us"
+New-TestScenario "NUnit" "3.6.1" "N" "$nugetV2Api_us"
+New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV2Api_us"
+New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV2Api_us"
+tracert_test
+url_tests
+ZipFiles "$PSScriptRoot\output.zip" "$outputDir"
