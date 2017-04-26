@@ -1,8 +1,8 @@
 $nugetExeUrl = "https://dist.nuget.org/win-x86-commandline/v4.0.0/nuget.exe"
 $nugetExe = "$PSScriptRoot\nuget.exe"
 $nugetV3Api = "https://api.nuget.org/v3/index.json"
-$nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/api/v2/package"
-$nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/api/v2/package"
+$nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/nuget"
+$nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/nuget"
 Get-Date -Format o
 $OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
 $outputDir = "$PSScriptRoot\$OutputTimeStamp"
@@ -539,6 +539,6 @@ New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV2Api_us"
 New-TestScenario "NUnit" "3.6.1" "N" "$nugetV2Api_us"
 New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV2Api_us"
 New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV2Api_us"
-tracert_test
-url_tests
+#tracert_test
+#url_tests
 ZipFiles "$PSScriptRoot\output.zip" "$outputDir"
