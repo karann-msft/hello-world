@@ -3,8 +3,8 @@ $nugetExe = "$PSScriptRoot\nuget.exe"
 $nugetV3Api = "https://api.nuget.org/v3/index.json"
 $nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/nuget"
 $nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/nuget"
-Get-Date -Format o
-$OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
+#$OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
+$OutputTimeStamp = (get-date).ToUniversalTime().ToString("yyyy-MM-ddTHH.mm.ss.fffffffZ")  
 $outputDir = "$PSScriptRoot\$env:computername-$OutputTimeStamp"
 
 New-Item -ItemType Directory -Path $outputDir | Out-Null
@@ -167,7 +167,10 @@ using System.Runtime.InteropServices;
 </Project>
 '@
 
-    filter timestamp {"$(Get-Date -Format o): $_"}
+    #filter timestamp {"$(Get-Date -Format o): $_"}
+
+    filter timestamp {"$((get-date).ToUniversalTime().ToString("yyyy-MM-ddTHH.mm.ss.fffffffZ")): $_"}
+    
 
     IF ($disableparallel -eq "Y")
     {
