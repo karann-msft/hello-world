@@ -9,6 +9,14 @@ $outputDir = "$PSScriptRoot\$env:computername-$OutputTimeStamp"
 
 New-Item -ItemType Directory -Path $outputDir | Out-Null
 
+Function Create-log-dir
+{
+
+    If (Test-Path $PSScriptRoot\..\$env:computername){}
+    Else {New-Item -ItemType Directory -Path $PSScriptRoot\..\$env:computername | Out-Null}
+
+}
+
 <#
 Package restore tests
 #>
@@ -521,8 +529,10 @@ function tracert_test()
 
 }
 
+function delete-crap {Remove-Item $outputDir -Force -Recurse | Out-Null}
 
 
+Create-log-dir
 #Get-NuGetExe
 #dxdiag /x $outputDir\dxdiag.xml
 New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV3Api"
@@ -539,6 +549,8 @@ New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV2Api_us"
 New-TestScenario "NUnit" "3.6.1" "N" "$nugetV2Api_us"
 New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV2Api_us"
 New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV2Api_us"
-#tracert_test
-#url_tests
-ZipFiles "$PSScriptRoot\output.zip" "$outputDir"
+tracert_test
+url_tests
+ZipFiles "$PSScriptRoot\..\$env:computername\$env:computername-$OutputTimeStamp.zip" "$outputDir" | Out-Null
+delete-crap
+
