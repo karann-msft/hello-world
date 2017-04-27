@@ -5,7 +5,7 @@ $nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/nuget"
 $nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/nuget"
 Get-Date -Format o
 $OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
-$outputDir = "$PSScriptRoot\$OutputTimeStamp"
+$outputDir = "$PSScriptRoot\$env:computername-$OutputTimeStamp"
 
 New-Item -ItemType Directory -Path $outputDir | Out-Null
 
@@ -186,7 +186,7 @@ using System.Runtime.InteropServices;
 
     
 
-    $logFile = "$outputDir\TestScenario_v2-$src_name-$disableparallelflag-$packageId-$packageVersion-log.txt"
+    $logFile = "$outputDir\TestScenario_v3-$src_name-$disableparallelflag-$packageId-$packageVersion-log.txt"
     Write-Output "Creating $logFile file"
     If (Test-Path $logFile){
 	    Remove-Item $logFile -Force
@@ -199,7 +199,7 @@ using System.Runtime.InteropServices;
 
     Write-Output "Completed test scenario for $packageId $packageVersion"
     Write-Output ""
-    #Remove-Item $testDir -Force -Recurse
+    Remove-Item $testDir -Force -Recurse
 }
 
 
@@ -523,7 +523,7 @@ function tracert_test()
 
 
 
-Get-NuGetExe
+#Get-NuGetExe
 #dxdiag /x $outputDir\dxdiag.xml
 New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV3Api"
 New-TestScenario "NUnit" "3.6.1" "N" "$nugetV3Api"
