@@ -1,6 +1,7 @@
 $nugetExeUrl = "https://dist.nuget.org/win-x86-commandline/v4.0.0/nuget.exe"
 $nugetExe = "$PSScriptRoot\nuget.exe"
 $nugetV3Api = "https://api.nuget.org/v3/index.json"
+$nugetV3api_cn = "http://nugetdev.cdn.azure.cn/v3-index2/index.json"
 $nugetV2Api_cn = "http://nuget-cn-east.chinacloudsites.cn/nuget"
 $nugetV2Api_us = "http://nuget-us-east.azurewebsites.net/nuget"
 #$OutputTimeStamp = Get-Date -Format o | foreach {$_ -replace ":", "."}
@@ -193,6 +194,7 @@ using System.Runtime.InteropServices;
     if ( $source -eq $nugetV3Api) {$src_name = "nuget-org"}
     elseif ($source -eq $nugetV2Api_cn) {$src_name = "nuget-cn-east"}
     elseif ($source -eq $nugetV2Api_us) {$src_name = "nuget-us-east"}
+    elseif ($source -eq $nugetV3api_cn) {$src_name = "nuget-cn-cdn"}
 
 
     
@@ -542,6 +544,11 @@ New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV3Api"
 New-TestScenario "NUnit" "3.6.1" "N" "$nugetV3Api"
 New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV3Api"
 New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV3Api"
+
+New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV3api_cn"
+New-TestScenario "NUnit" "3.6.1" "N" "$nugetV3api_cn"
+New-TestScenario "Newtonsoft.Json" "10.0.2" "Y" "$nugetV3api_cn"
+New-TestScenario "NUnit" "3.6.1" "Y" "$nugetV3api_cn"
 
 New-TestScenario "Newtonsoft.Json" "10.0.2" "N" "$nugetV2Api_cn"
 New-TestScenario "NUnit" "3.6.1" "N" "$nugetV2Api_cn"
