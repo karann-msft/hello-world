@@ -1,0 +1,2 @@
+Set-ExecutionPolicy Unrestricted
+Unblock-File -Path C:\Users\karann9\Downloads\hello-world-master\test-scenario.ps1
